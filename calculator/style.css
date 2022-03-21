@@ -1,0 +1,24 @@
+/** @format */
+
+.result {
+  height: 30px;
+  width: 218px;
+  margin-bottom: 5px;
+  background: rgb(167, 193, 243);
+  border: 1px solid grey;
+}
+.calc_grid {
+  display: grid;
+  grid-template: repeat(3, 50px) / repeat(4, 50px);
+  grid-gap: 5px;
+}
+
+.calc_grid a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(67, 67, 163);
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}

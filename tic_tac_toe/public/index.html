@@ -1,0 +1,34 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="style.css">
+
+<section id="tic_tac_toe_game">
+    <h2 class="message"></h2>
+    <div class="game_board">
+        <a href="#" data-coord="1"></a>
+        <a href="#" data-coord="2"></a>
+        <a href="#" data-coord="3"></a>
+
+        <a href="#" data-coord="4"></a>
+        <a href="#" data-coord="5"></a>
+        <a href="#" data-coord="6"></a>
+
+        <a href="#" data-coord="7"></a>
+        <a href="#" data-coord="8"></a>
+        <a href="#" data-coord="9"></a>
+    </div>
+</section>
+
+<a href="#" class="btn reset">Reset</a>
+
+<section id="register_player">
+    <form action="api.php?name=contact_form" method="post">
+        <input type="text" name="player" placeholder="Player Name">
+        <button type="submit">Add Player</button>
+    </form>
+</section>
+
+<a href="#register_player" class="to_top">⬆</a>
+
+<script src="Request.js"></script>
+<script src="script.js"></script>
