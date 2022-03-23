@@ -11,6 +11,20 @@ $output = ['status' => false];
 
 if (isset($_GET['name']) && is_string($_GET['name'])) {
     switch ($_GET['name']) {
+        case 'getSubscribers':
+            $output['status'] = true;
+            $subscribers = new Subscribers();
+            $output['subscribers'] = $subscribers->getAll();
+            break;
+        case 'getSingleSubscriber':
+            if (isset($_GET['id']) && is_string($_GET['id'])) {
+                $id = (int) $_GET['id'];
+                $output['status'] = true;
+                $subscribers = new Subscribers();
+                $output['entity'] = $subscribers->get($id);
+            }
+
+            break;
         case 'subscribe':
             if (
                 isset($_POST['name']) && is_string($_POST['name']) &&
@@ -38,19 +52,30 @@ if (isset($_GET['name']) && is_string($_GET['name'])) {
             }
 
             break;
-        case 'getSubscribers':
-            $output['status'] = true;
-            $subscribers = new Subscribers();
-            $output['subscribers'] = $subscribers->getAll();
+        case 'update_subscribe':
+            if (
+                isset($_POST['id']) && is_string($_POST['id']) &&
+                isset($_POST['name']) && is_string($_POST['name']) &&
+                isset($_POST['email']) && is_string($_POST['email'])
+            ) {
+                $output['status'] = true;
+
+                //TODO: add update functionality
+            }
             break;
         case 'delete':
             if (
                 isset($_POST['id']) && is_string($_POST['id'])
             ) {
-                $id = $_POST['id'];
-                // TODO: implement deletion from database
-                $output['status'] = true;
-                $output['message'] = "element $id deleted";
+                $id = (int) $_POST['id'];
+                $subscribers = new Subscribers();
+                if ($subscribers->delete($id)) {
+                    $output['status'] = true;
+                    $output['message'] = "element $id deleted";
+                }
+                else {
+                    $output['message'] = "Deletion failed";
+                }
             }
             break;
     }

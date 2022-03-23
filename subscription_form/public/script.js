@@ -36,19 +36,29 @@ function printSubscriber(subscriber) {
     delete_btn.dataset.id = subscriber.id
     delete_btn.onclick = deleteHandler
 
-    let cell = document.createElement('td')
-    cell.textContent = subscriber.name
-    row.append(cell)
+    const edit_btn = document.createElement('a')
+    edit_btn.setAttribute('href', 'edit.html?id=' + subscriber.id)
+    edit_btn.classList.add('edit')
+    edit_btn.textContent = 'edit'
 
-    cell = document.createElement('td')
-    cell.textContent = subscriber.email
-    row.append(cell)
-
-    cell = document.createElement('td')
-    cell.append(delete_btn)
-    row.append(cell)
+    row.append(newCell(subscriber.name))
+    row.append(newCell(subscriber.email))
+    row.append(newCell(edit_btn, true))
+    row.append(newCell(delete_btn, true))
 
     document.querySelector('#subscribers_list tbody').append(row)
+}
+
+function newCell(content, bool = false) {
+    let cell = document.createElement('td')
+    if (!bool) {
+        cell.textContent = content
+    }
+    else {
+        cell.append(content)
+    }
+
+    return cell;
 }
 
 function deleteHandler(event) {
@@ -60,5 +70,5 @@ function deleteHandler(event) {
 
     req.post(url, data, function (response) {
         btn.parentNode.parentNode.remove()
-    });
+    })
 }

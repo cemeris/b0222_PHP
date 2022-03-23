@@ -16,14 +16,21 @@ class DB
         $this->conn->close();
     }
 
-    protected function selectAll($table_name) {
+    protected function getById(int $id, string $table_name) {
+        $this->last_sql = "SELECT * FROM $table_name WHERE id=$id";
+        $result = $this->conn->query($this->last_sql);
+
+        return $result->fetch_assoc();
+    }
+
+    protected function selectAll(string $table_name) {
         $this->last_sql = "SELECT * FROM $table_name";
         $result = $this->conn->query($this->last_sql);
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    protected function insertEntity($entity, $table_name) {
+    protected function insertEntity(array $entity, string $table_name) {
         $column_str = '';
         $value_str = '';
 
@@ -39,6 +46,17 @@ class DB
         if ($this->conn->query($this->last_sql)) {
             $entity['id'] = $this->conn->insert_id;
             return $entity;
+        }
+        return false;
+    }
+
+    protected function deleteEntityById(int $id, string $table_name) {
+        $sql = "DELETE FROM $table_name WHERE id=$id";
+        if (
+            $this->conn->query($sql) &&
+            $this->conn->affected_rows > 0
+        ) {
+            return true;
         }
         return false;
     }
