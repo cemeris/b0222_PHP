@@ -1,9 +1,9 @@
 <?php
 namespace Database;
 
-class Subscribers extends DB
+class BlogPosts extends DB
 {
-    private $table_name = 'subscribers';
+    private $table_name = 'blog_posts';
 
     public function get(int $id) {
         return $this->getById($id, $this->table_name);

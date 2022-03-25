@@ -1,82 +1,60 @@
 <?php
 define('PRIVATE_DIR', __DIR__ . '/../private/');
-
 include PRIVATE_DIR . 'bootstrap.php';
 
+use Helpers\ApiHelper;
 use Database\Subscribers;
+use Database\BlogPosts;
 
 header('Content-type: application/json');
 
 $output = ['status' => false];
+$api_helper = new ApiHelper();
 
-if (isset($_GET['name']) && is_string($_GET['name'])) {
+if (isset($_GET['batch']) && is_string($_GET['batch'])) {
+    switch ($_GET['batch']) {
+        case 'batch1':
+            $blog_posts = $api_helper->getBlogPosts();
+            if (array_key_exists('status', $blog_posts)) {
+                $list_of_subscribers = $api_helper->getSubscribers();
+                if (array_key_exists('status', $list_of_subscribers)) {
+                    // Both queries are without errors
+                    $output = array_merge($output, $blog_posts, $list_of_subscribers);
+                }
+                else {
+                    // Error in Subscription query
+                    $output = array_merge($output, $list_of_subscribers);
+                }
+            }
+            else {
+                // Error in BlogPosts query
+                $output = array_merge($output, $blog_posts);
+            }
+        break;
+    }
+}
+elseif (isset($_GET['name']) && is_string($_GET['name'])) {
     switch ($_GET['name']) {
+        case 'getBlogPosts':
+            $output = array_merge($output, $api_helper->getBlogPosts());
+            break;
         case 'getSubscribers':
-            $output['status'] = true;
-            $subscribers = new Subscribers();
-            $output['subscribers'] = $subscribers->getAll();
+            $output = array_merge($output, $api_helper->getSubscribers());
             break;
         case 'getSingleSubscriber':
-            if (isset($_GET['id']) && is_string($_GET['id'])) {
-                $id = (int) $_GET['id'];
-                $output['status'] = true;
-                $subscribers = new Subscribers();
-                $output['entity'] = $subscribers->get($id);
-            }
-
+            $output = array_merge($output, $api_helper->getSingleSubscriber());
+            break;
+        case 'getSinglePost':
+            $output = array_merge($output, $api_helper->getSinglePost());
             break;
         case 'subscribe':
-            if (
-                isset($_POST['name']) && is_string($_POST['name']) &&
-                isset($_POST['email']) && is_string($_POST['email'])
-            ) {
-                $subscribers = new Subscribers();
-
-                $entity = [
-                    'name' => $_POST['name'],
-                    'email' => $_POST['email']
-                ];
-
-                $entity = $subscribers->addEntity($entity);
-                if (is_array($entity)) {
-                    $output['status'] = true;
-                    $output['entity'] = $entity;
-                    $output['message'] = 'New Entry added!';
-                }
-                else {
-                    $output['message'] = 'There is an error!';
-                    if (DEBUG_MODE) {
-                        $output['message'] .= ' ' . $subscribers->getError();
-                    }
-                }
-            }
-
+            $output = array_merge($output, $api_helper->subscribe());
             break;
         case 'update_subscribe':
-            if (
-                isset($_POST['id']) && is_string($_POST['id']) &&
-                isset($_POST['name']) && is_string($_POST['name']) &&
-                isset($_POST['email']) && is_string($_POST['email'])
-            ) {
-                $output['status'] = true;
-
-                //TODO: add update functionality
-            }
+            $output = array_merge($output, $api_helper->updateSubscriber());
             break;
         case 'delete':
-            if (
-                isset($_POST['id']) && is_string($_POST['id'])
-            ) {
-                $id = (int) $_POST['id'];
-                $subscribers = new Subscribers();
-                if ($subscribers->delete($id)) {
-                    $output['status'] = true;
-                    $output['message'] = "element $id deleted";
-                }
-                else {
-                    $output['message'] = "Deletion failed";
-                }
-            }
+            $output = array_merge($output, $api_helper->delete());
             break;
     }
 }

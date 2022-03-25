@@ -1,12 +1,15 @@
 const req = new Request();
 
-req.get('api.php?name=getSubscribers', function (response) {
+req.get('api.php?batch=batch1', function (response) {
     for (let subscriber of response.subscribers) {
         printSubscriber(subscriber)
     }
+    for (let post of response.blog_posts) {
+        printPostTitle(post)
+    }
 })
 
-document.querySelector('form').onsubmit = function(event) {
+function submitHandler(event) {
     event.preventDefault()
     if(document.getElementById('subscription_check').checked) {
         const url = this.getAttribute('action')
@@ -59,6 +62,16 @@ function newCell(content, bool = false) {
     }
 
     return cell;
+}
+
+const blog_posts_element = document.getElementById('blog_posts')
+function printPostTitle (post) {
+    const link = document.createElement('a')
+    link.setAttribute('href', 'api.php?name=getSinglePost&id=' + post.id)
+    link.setAttribute('target', '_blank')
+    link.textContent = post.title
+
+    blog_posts_element.append(link)
 }
 
 function deleteHandler(event) {

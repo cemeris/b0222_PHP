@@ -4,32 +4,49 @@
 <link rel="stylesheet" href="style.css">
 <script src="Request.js"></script>
 
-<div class="container col-10 col-sm-6 col-xs-12">
-    <p id="message" class="alert alert-danger"></p>
-    <form action="api.php?name=subscribe">
-        <div class="mb-3">
-          <label for="subscription_name" class="form-label">Name</label>
-          <input type="text" class="form-control" id="subscription_name" name="name">
-        </div>
-        <div class="mb-3">
-            <label for="subscription_email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="subscription_email" aria-describedby="emailHelp" name="email">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-          </div>
-        <div class="mb-3 form-check">
-          <input type="checkbox" class="form-check-input" id="subscription_check">
-          <label class="form-check-label" for="subscription_check">agree with Privacy Policy</label>
-        </div>
-        <button type="submit" class="btn btn-success">Submit</button>
-    </form>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-sm-12">
+      <h2>Blog</h2>
+      <div id="blog_posts"></div>
+    </div>
+    <div class="col-md-6 col-sm-12">
+      <h2>Subscribers</h2>
+        <p id="message" class="alert alert-danger"></p>
+        <form action="api.php?name=subscribe">
+            <div class="mb-3">
+              <label for="subscription_name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="subscription_name" name="name">
+            </div>
+            <div class="mb-3">
+                <label for="subscription_email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="subscription_email" aria-describedby="emailHelp" name="email">
+                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+              </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="subscription_check">
+              <label class="form-check-label" for="subscription_check">agree with Privacy Policy</label>
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+
+        <table id="subscribers_list">
+          <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th colspan="2"></th>
+          </tr>
+      </table>
+    </div>
+  </div>
 </div>
 
-<table id="subscribers_list">
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th colspan="2"></th>
-    </tr>
-</table>
-
 <script src="script.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(event) {
+  document.querySelector('form').onsubmit = submitHandler
+});
+
+</script>

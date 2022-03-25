@@ -27,7 +27,10 @@ class DB
         $this->last_sql = "SELECT * FROM $table_name";
         $result = $this->conn->query($this->last_sql);
 
-        return $result->fetch_all(MYSQLI_ASSOC);
+        if ($result != false) {
+            return $result->fetch_all(MYSQLI_ASSOC);
+        }
+        return false;
     }
 
     protected function insertEntity(array $entity, string $table_name) {
@@ -48,6 +51,21 @@ class DB
             return $entity;
         }
         return false;
+    }
+
+    protected function updateEntityChanges (array $entity, string $table_name) {
+        $id = $entity['id'];
+        $column_value_str = '';
+
+        unset($entity['id']);
+
+        foreach ($entity as $column => $value) {
+            $column_value_str .= $column . "='" . $value . "',";
+        }
+        $column_value_str = substr_replace($column_value_str, "", -1);
+        $this->last_sql = "UPDATE $table_name SET $column_value_str WHERE id=$id";
+
+        return ($this->conn->query($this->last_sql) === true);
     }
 
     protected function deleteEntityById(int $id, string $table_name) {
